@@ -28,7 +28,7 @@ def der_Voltage(
     C = capacitance
     I = current
     
-    derivative_V = (I/C) - g_Na*m**3*h(V - E_Na) - g_K*n**4(V - E_K) - g_L*(V - E_L)
+    derivative_V = (I - g_Na*(m**3)*h*(V - E_Na) - g_K*(n**4)*(V - E_K) - g_L*(V - E_L))/C
 
     return derivative_V
 
