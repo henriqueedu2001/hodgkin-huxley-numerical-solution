@@ -2,7 +2,7 @@ import numpy as np
 import eq_parameters
 import state_variables
 
-def euler_solution(time_interval: (float, float), n_steps: int, initial_y: np.array):
+def euler_solution(time_interval: (float, float), n_steps: int, initial_y: np.array, constants: dict):
     """Computes a numerical solution for the y(t) = [V(t), m(t), h(t), n(t)], the solution of the
     Hodgkin-Huxley differential equation via Euler's method: y_{k+1} = y_k + f(t_k, y_k)*delta_t
 
@@ -10,7 +10,8 @@ def euler_solution(time_interval: (float, float), n_steps: int, initial_y: np.ar
         time_interval ((float, float)): domain of the function (interval [a,b]) 
         n_steps (int): number of steps for discretize the domain
         initial_y (np.array): the initial value of the vector y: y(0) = [V(0), m(0), h(0), n(0)]
-
+        constants: the constants g_Na, g_K, g_L, E_Na, E_K and E_L of the model
+        
     Returns:
         (np.array, np.array): tupla (X, Y), em que X = [t_0, t_1, t_2, ..., t_{n-1}] é 
         o domínio discretizado e Y = [y_0, y_1, y_2, ..., y_{n-1}] é a solução aproximada
@@ -29,7 +30,7 @@ def euler_solution(time_interval: (float, float), n_steps: int, initial_y: np.ar
         y_k = y_aprox[k]
         
         # y_{k+1} = y_k + f(t_k, y_k)*delta_t
-        next_y = y_k + cauchy_function(t_k, y_k)*delta_t
+        next_y = y_k + cauchy_function(t_k, y_k, constants)*delta_t
         y_aprox.append(next_y)
     
     return y_aprox
@@ -95,12 +96,19 @@ def discretize_interval(interval: (float, float), n_steps: int) -> np.array:
 
 def main():
     constants = {
-        'current': 1, 'capacitance':1,
+        'current': 1, 'capacitance':0.1,
         'g_Na': 120.0, 'g_K': 36.0, 'g_L': 0.3,
         'E_Na': 11.1, 'E_K': 11.1, 'E_L': -49.0
     }
-    y = np.array([1, 2, 3, 4])
-    print(cauchy_function(0, y, constants))
+    T = [0, 2]
+    n = 100
+    y_0 = np.array([1, 2, 3, 4])
+    #print(cauchy_function(0, y_0, constants))
+    
+    sol = euler_solution(T, n, y_0, constants)
+    
+    for x in sol:
+        print(f'--> {x}')
     
     # essa parte aqui vai ser mais chatinha de fazer kkkk
     # E_L = -49. 
