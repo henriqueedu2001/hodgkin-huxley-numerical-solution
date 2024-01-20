@@ -2,9 +2,7 @@ import numpy as np
 
 def der_Voltage(
     voltage: float, current: float, capacitance: float, 
-    m: float, h: float, n: float,
-    g_Na: float, g_K: float, g_L: float,
-    E_Na: float, E_K: float, E_L: float) -> float:
+    m: float, h: float, n: float, constants) -> float:
     """Computes derivative of the voltage V in the model.
     der_v = ...
 
@@ -27,6 +25,11 @@ def der_Voltage(
     V = voltage
     C = capacitance
     I = current
+    
+    # unpacking the parameters from the dictionary "constants"
+    I, C = constants['current'], constants['capacitance']
+    g_Na, g_K, g_L = constants['g_Na'], constants['g_K'], constants['g_L']
+    E_Na, E_K, E_L = constants['E_Na'], constants['E_K'], constants['E_L']
     
     derivative_V = (I - g_Na*(m**3)*h*(V - E_Na) - g_K*(n**4)*(V - E_K) - g_L*(V - E_L))/C
 
