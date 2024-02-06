@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import eq_parameters
 import state_variables
 
@@ -20,6 +21,8 @@ def euler_solution(time_interval: (float, float), n_steps: int, initial_y: np.ar
     
     discretize_domain, delta_t = discretize_interval(time_interval, n_steps)
     
+    solution = []
+    
     y_aprox = []
     
     # y_0 = y(0)
@@ -33,7 +36,15 @@ def euler_solution(time_interval: (float, float), n_steps: int, initial_y: np.ar
         next_y = y_k + cauchy_function(t_k, y_k, constants)*delta_t
         y_aprox.append(next_y)
     
-    return y_aprox
+    # adds time stamps
+    for k, y_k in enumerate(y_aprox):
+        t_k = np.array([discretize_domain[k]])
+        time_stamped_sol = np.concatenate((t_k, y_k))
+        solution.append(time_stamped_sol)
+        
+    # solution = np.array(solution)
+    
+    return solution
 
 
 def cauchy_function(t: float, y: np.array, constants: dict) -> np.array:
@@ -60,7 +71,7 @@ def cauchy_function(t: float, y: np.array, constants: dict) -> np.array:
     alpha_h, beta_h = eq_parameters.alpha_h(V), eq_parameters.beta_h(V)
     alpha_n, beta_n = eq_parameters.alpha_m(V), eq_parameters.beta_m(V)
     
-    print(V, I, C, m, h, n, g_Na, g_K, g_L, E_Na, E_K, E_L)
+    # print(V, I, C, m, h, n, g_Na, g_K, g_L, E_Na, E_K, E_L)
     
     # evaluating the derivatives of each component
     der_v = state_variables.der_Voltage(V, I, C, m, h, n, constants)
@@ -96,19 +107,37 @@ def discretize_interval(interval: (float, float), n_steps: int) -> np.array:
 
 def main():
     constants = {
-        'current': 1, 'capacitance':0.1,
-        'g_Na': 120.0, 'g_K': 36.0, 'g_L': 0.3,
-        'E_Na': 11.1, 'E_K': 11.1, 'E_L': -49.0
+        'current': 0, 
+        'capacitance':1.0e-0,
+        'g_Na': 1200,
+        'g_K': 360, 
+        'g_L': 3,
+        'E_Na': +55.0e-3, 
+        'E_K':  -75.0e-3, 
+        'E_L':  +49.0e-3
     }
-    T = [0, 2]
-    n = 100
-    y_0 = np.array([1, 2, 3, 4])
+    
+    T = [0, 3]
+    n = 400
+    
+    y_0 = np.array([
+            65e-3, # V
+            0.05,  # m
+            0.06,  # h
+            0.35   # n
+        ])
+    
     #print(cauchy_function(0, y_0, constants))
     
     sol = euler_solution(T, n, y_0, constants)
     
     for x in sol:
-        print(f'--> {x}')
+        print(x)
+
+    df = pd.DataFrame(sol)
+    df.to_csv('out.csv')
+    
+    # print(sol)
     
     # essa parte aqui vai ser mais chatinha de fazer kkkk
     # E_L = -49. 
