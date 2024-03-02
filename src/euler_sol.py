@@ -107,21 +107,21 @@ def discretize_interval(interval: (float, float), n_steps: int) -> np.array:
 
 def main():
     constants = {
-        'current': 0, 
-        'capacitance':1.0e-0,
-        'g_Na': 1200,
-        'g_K': 360, 
-        'g_L': 3,
-        'E_Na': +55.0e-3, 
-        'E_K':  -75.0e-3, 
-        'E_L':  +49.0e-3
+        'current': 0., 
+        'capacitance':0.1e0,
+        'g_Na': 120.,
+        'g_K': 36., 
+        'g_L': 0.3,
+        'E_Na': +24.21, 
+        'E_K':  -31.76, 
+        'E_L':  -49.0
     }
     
-    T = [0, 3]
-    n = 400
+    T = [0, 6]
+    n = 12000
     
     y_0 = np.array([
-            65e-3, # V
+            -65, # V
             0.05,  # m
             0.06,  # h
             0.35   # n

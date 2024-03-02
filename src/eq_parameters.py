@@ -11,7 +11,7 @@ def alpha_m(voltage: float) -> float:
         float: the alpha_m parameter for the specified voltage 
     """
     V = voltage
-    alpha = 0.1*(V + 25)/(np.exp((V + 25)/10) - 1)
+    alpha = 0.1*(V + 25.)/(1 - np.exp((V + 25.)/10.))
     
     return alpha
 
@@ -27,7 +27,7 @@ def beta_m(voltage: float) -> float:
         float: the beta_m parameter for the specified voltage 
     """
     V = voltage
-    beta = 4*np.exp(V/18)
+    beta = 4.*np.exp(-(V + 65.)/18.)
     
     return beta
 
@@ -43,7 +43,7 @@ def alpha_h(voltage: float) -> float:
         float: the alpha_h parameter for the specified voltage 
     """
     V = voltage
-    alpha = 0.07*np.exp(V/20)
+    alpha = 0.07*np.exp(-(V + 65.0)/20.0)
     
     return alpha
 
@@ -59,7 +59,7 @@ def beta_h(voltage: float) -> float:
         float: the beta_h parameter for the specified voltage 
     """
     V = voltage
-    beta = 1/(np.exp((V + 30)/10) + 1)
+    beta = 1./(np.exp(-(V + 35.)/10.) + 1.)
     
     return beta
 
@@ -75,7 +75,7 @@ def alpha_n(voltage: float) -> float:
         float: the alpha_n parameter for the specified voltage 
     """
     V = voltage
-    alpha = 0.01*(V + 10)/(np.exp((V + 10)/10) - 1)
+    alpha = 0.01*(V + 55.)/(1 - np.exp(-(V + 55.)/10.))
     
     return alpha
 
@@ -91,6 +91,6 @@ def beta_n(voltage: float) -> float:
         float: the beta_n parameter for the specified voltage 
     """
     V = voltage
-    beta = 0.125*np.exp(V/80)
+    beta = 0.125*np.exp(-(V + 65)/80.)
     
     return beta
