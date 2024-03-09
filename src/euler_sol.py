@@ -30,10 +30,20 @@ def euler_solution(time_interval: (float, float), n_steps: int, initial_y: np.ar
     
     # evaluates y_{k+1} com y_k e t_k
     for k, t_k in enumerate(discretize_domain[:-1]):
-        y_k = y_aprox[k]
+        # y_k = y_aprox[k]
         
-        # y_{k+1} = y_k + f(t_k, y_k)*delta_t
-        next_y = y_k + cauchy_function(t_k, y_k, constants)*delta_t
+        # Explicit Euler
+        # # y_{k+1} = y_k + f(t_k, y_k)*delta_t
+        # next_y = y_k + cauchy_function(t_k, y_k, constants)*delta_t
+        # y_aprox.append(next_y)
+
+        #Classic Runge-Kutta
+        y_k = y_aprox[k]
+        k1 = cauchy_function(t_k, y_k, constants)
+        k2 = cauchy_function(t_k + 0.5*delta_t, y_k + delta_t*0.5*k1, constants)
+        k3 = cauchy_function(t_k + 0.5*delta_t, y_k + delta_t*0.5*k2, constants)
+        k4 = cauchy_function(t_k + delta_t, y_k + delta_t*k3, constants)
+        next_y = y_k + (k1 + 2*k2 + 2*k3 + k4)*delta_t/6
         y_aprox.append(next_y)
     
     # adds time stamps
@@ -69,7 +79,7 @@ def cauchy_function(t: float, y: np.array, constants: dict) -> np.array:
     # computing the alpha and beta parameters of the model
     alpha_m, beta_m = eq_parameters.alpha_m(V), eq_parameters.beta_m(V)
     alpha_h, beta_h = eq_parameters.alpha_h(V), eq_parameters.beta_h(V)
-    alpha_n, beta_n = eq_parameters.alpha_m(V), eq_parameters.beta_m(V)
+    alpha_n, beta_n = eq_parameters.alpha_n(V), eq_parameters.beta_n(V)
     
     # print(V, I, C, m, h, n, g_Na, g_K, g_L, E_Na, E_K, E_L)
     
@@ -108,31 +118,28 @@ def discretize_interval(interval: (float, float), n_steps: int) -> np.array:
 def main():
     constants = {
         'current': 0., 
-        'capacitance':0.1e0,
+        'capacitance': 1.,
         'g_Na': 120.,
         'g_K': 36., 
         'g_L': 0.3,
-        'E_Na': +24.21, 
-        'E_K':  -31.76, 
-        'E_L':  -49.0
+        'E_Na': 115., 
+        'E_K':  -12.0, 
+        'E_L':  10.613
     }
     
-    T = [0, 6]
-    n = 12000
+    T = [0, 30]
+    n = 5000
     
     y_0 = np.array([
-            -65, # V
+            0., # V
             0.05,  # m
-            0.06,  # h
-            0.35   # n
+            0.6,  # h
+            0.06  # n
         ])
     
     #print(cauchy_function(0, y_0, constants))
     
     sol = euler_solution(T, n, y_0, constants)
-    
-    for x in sol:
-        print(x)
 
     df = pd.DataFrame(sol)
     df.to_csv('out.csv')
