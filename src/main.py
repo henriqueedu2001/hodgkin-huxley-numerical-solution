@@ -1,14 +1,10 @@
 import numpy as np
 import pandas as pd
+import implicit_euler
 import euler_sol
 import rk_sol
 import splines
 import math
-
-file_V_int = "V_coef.txt"
-file_m_int = "m_coef.txt"
-file_n_int = "n_coef.txt"
-file_h_int = "h_coef.txt"
 
 def print_coef(coef, file):
     with open(file, 'w') as file:
@@ -46,48 +42,15 @@ def main():
     # df.to_csv('out_euler.csv')    
 
     # Runge-Kutta Solution
-    runge_kutta_sol = rk_sol.rk_solution(T, n, y_0, constants)
-    df = pd.DataFrame(runge_kutta_sol)
-    df.to_csv('out_rk.csv')
-
-    # Runge-Kutta Solution for different values of n
-    # n = 10000
-    # runge_kutta_sol = rk_sol.rk_solution(T, n, y_0, constants)
-    # df = pd.DataFrame(runge_kutta_sol)
-    # df.to_csv('out_rk_10000.csv')
-
-    # n = 50000
-    # runge_kutta_sol = rk_sol.rk_solution(T, n, y_0, constants)
-    # df = pd.DataFrame(runge_kutta_sol)
-    # df.to_csv('out_rk_50000.csv')
-
-    # Cubic Splines Interpolation
-    coef = splines.splines(runge_kutta_sol)
-    coef_V, coef_m, coef_n, coef_h = coef[0], coef[1], coef[2], coef[3]
-    print_coef(coef_V, file_V_int)
-    print_coef(coef_m, file_m_int)
-    print_coef(coef_n, file_n_int)
-    print_coef(coef_h, file_h_int)
-
-    #Convergence Table
-    # m = 8
-
-    # with open("behavior_convergence_rk.txt", 'w', encoding='utf-8') as file2:
-    #     file2.write("ORDER BEHAVIOR CONVERGENCE TABLE\n")
-    #     e=q=r=0
-    #     h = [0]*m
-    #     yn = [y_0]*m
-
-    #     for i in range(1, m + 1):
-    #         n = 1000*2**(i-1)
-    #         h[i-1] = (T[1] - T[0])/n
-    #         yn[i-1] = rk_sol.rk_solution(T, n, y_0, constants)
-    #         if i > 2:
-    #             q = abs((yn[i-3][-1][1]-yn[i-2][-1][1])/(yn[i-2][-1][1]-yn[i-1][-1][1]))
-    #             r = h[i-2]/h[i-1]
-    #             p = math.log(q)/math.log(r)
-    #             e = abs((yn[i-2][-1][1]-yn[i-1][-1][1]))
-    #             file2.write("{:5d} & {:9.3e} & {:9.3e} & {:9.3e}\\\\\n".format(n,h[i-1],e,p))
+    
+    # n_values = [30, 100, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000]
+    n_values = [392, 394, 396, 398]
+    
+    for n in n_values:
+        print(f'n = {n}')
+        implicit_euler_sol = implicit_euler.implicit_euler_solution(T, n, y_0, constants)
+        df = pd.DataFrame(implicit_euler_sol)
+        df.to_csv(f'imgs/implicit_euler_out/out_imp_euler_{n}.csv')
     
     return
 
