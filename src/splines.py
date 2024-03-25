@@ -28,5 +28,5 @@ def splines(solution: list):
     points_n = np.array(list(zip(t_sorted, n_int(t_sorted))))
     points_h = np.array(list(zip(t_sorted, h_int(t_sorted))))
 
-    return V_coef, m_coef, n_coef, h_coef, points_V, points_m, points_n, points_h    
+    return V_coef, m_coef, n_coef, h_coef, points_V, points_m, points_n, points_h
     

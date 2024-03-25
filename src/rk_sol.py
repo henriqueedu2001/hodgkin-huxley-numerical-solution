@@ -31,11 +31,12 @@ def rk_solution(time_interval: (float, float), n_steps: int, initial_y: np.array
     
     # evaluates y_{k+1} with y_k and t_k
     for k, t_k in enumerate(discretize_domain[:-1]):
+        
         #Classic Runge-Kutta
         y_k = y_aprox[k]
         k1 = cauchy_function.cauchy_function(t_k, y_k, constants)
         k2 = cauchy_function.cauchy_function(t_k + delta_t*0.5, y_k + delta_t*k1*0.5, constants)
-        k3 = cauchy_function.cauchy_function(t_k + delta_t*0.5, y_k + delta_t*k2*0.5, constants)
+        k3 = cauchy_function.cauchy_function(t_k + delta_t*0.5, y_k + delta_t*0.5*k2, constants)
         k4 = cauchy_function.cauchy_function(t_k + delta_t, y_k + delta_t*k3, constants)
         next_y = y_k + delta_t*(k1 + 2.*k2 + 2.*k3 + k4)/6.
         y_aprox.append(next_y)
