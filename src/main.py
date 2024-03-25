@@ -44,13 +44,22 @@ def main():
     # Runge-Kutta Solution
     
     # n_values = [30, 100, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000]
-    n_values = [392, 394, 396, 398]
+    n_values = [30, 50, 100, 200, 300, 500, 
+            1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 90000,
+            10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000,
+            ]
     
     for n in n_values:
         print(f'n = {n}')
         implicit_euler_sol = implicit_euler.implicit_euler_solution(T, n, y_0, constants)
         df = pd.DataFrame(implicit_euler_sol)
         df.to_csv(f'imgs/implicit_euler_out/out_imp_euler_{n}.csv')
+    
+    for n in n_values:
+        print(f'n = {n}')
+        RK = rk_sol.rk_solution(T, n, y_0, constants)
+        df = pd.DataFrame(RK)
+        df.to_csv(f'imgs/rk_out/out_rk_{n}.csv')
     
     return
 
